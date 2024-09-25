@@ -65,7 +65,7 @@ public class S3EventBridgeEventDetailValueOffloading
               SUPPRESS_EXCEPTIONS // suppress exception otherwise
               // com.jayway.jsonpath.ReadContext#read throws an exception if JSON path could not
               // be found
-              );
+          );
 
   private final String bucketName;
   private final String prefix;
@@ -196,19 +196,12 @@ public class S3EventBridgeEventDetailValueOffloading
   }
 
   private String s3ArnOf(UUID uuid) {
-    String s3Arn;
-
-    if (prefix != null && !prefix.isEmpty()) {
-      s3Arn = format("arn:aws:s3:::%s/%s/%s", bucketName, prefix, uuid);
-    } else {
-      s3Arn = format("arn:aws:s3:::%s/%s", bucketName, uuid);
-    }
-
-    return s3Arn;
+    return (prefix != null && !prefix.isEmpty()) ? format("arn:aws:s3:::%s/%s/%s", bucketName,
+        prefix, uuid) : format("arn:aws:s3:::%s/%s", bucketName, uuid);
   }
 
   private UUID putS3Object(final String payload) {
-    var durationHolder = new Duration[] {null};
+    var durationHolder = new Duration[]{null};
     var s3ObjectId =
         s3ObjectKeyCache.computeIfAbsent(
             sha512Of(payload),
